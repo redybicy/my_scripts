@@ -15,7 +15,7 @@ SF_NX=""							#selected_file_extension_new
 close(){ zenity --info --title="$ZT" --text="$1";exit; }
 
 entry(){ zenity --entry --title="$ZT" --text="\
-Selected file is $SF \
+Selected file: $SF \
 \n\n\
 File extension is $SF_EX \
 \n\n\
