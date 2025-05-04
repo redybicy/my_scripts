@@ -1,0 +1,39 @@
+#!/bin/bash
+
+#variables
+
+ZT="FFmpeg convert"						#zenity_title
+SF_IN=${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS%$'\n'}		#ffmpeg_input
+SF_OUT=""							#ffmpeg_output
+SF=$(basename "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS")		#selected_file
+DR=$(dirname "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS")		#directory_name
+SF_EX=${SF##*.};if [[ "$SF_EX" == "$SF" ]];then SF_EX="";fi	#selected_file_extension
+SF_NX=""							#selected_file_extension_new
+
+#functions
+
+close(){ zenity --info --title="$ZT" --text="$1";exit; }
+
+entry(){ zenity --entry --title="$ZT" --text="\
+Selected file is $SF \
+\n\n\
+File extension is $SF_EX \
+\n\n\
+Enter extension to convert (A-Z, a-z, 0-9, without dot):";}
+
+replace(){ if [[ ! -z "$SF_EX" ]];then SF_OUT="${SF_IN%.*}.${SF_NX}";else SF_OUT="$SF_IN.$SF_NX";fi }
+
+confirm(){ zenity --question --title="$ZT" --text="Convert $SF to $SF_NX?\n\nSF_OUT: $SF_OUT"; }
+
+check(){ if [[ ! "$SF_NX" =~ ^[[:alnum:]]+$ ]];then close "Invalid characters";fi }
+
+convert(){ if ffmpeg -i "$SF_IN" "$SF_OUT";then close "Success";else close "FFmpeg error";fi; }
+
+#script_body
+
+if SF_NX=$(entry);then replace
+	if check;then
+		if confirm;then convert
+		else close "Cancelled by user";fi
+	fi
+else close "Cancelled by user";fi
