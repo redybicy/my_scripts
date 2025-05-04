@@ -23,7 +23,7 @@ Enter extension to convert (A-Z, a-z, 0-9, without dot):";}
 
 replace(){ if [[ ! -z "$SF_EX" ]];then SF_OUT="${SF_IN%.*}.${SF_NX}";else SF_OUT="$SF_IN.$SF_NX";fi }
 
-confirm(){ zenity --question --title="$ZT" --text="Convert $SF to $SF_NX?\n\nSF_OUT: $SF_OUT"; }
+confirm(){ zenity --question --title="$ZT" --text="Convert $SF to $SF_NX?"; }
 
 check(){ if [[ ! "$SF_NX" =~ ^[[:alnum:]]+$ ]];then close "Invalid characters";fi }
 
