@@ -2,13 +2,15 @@
 
 #variables
 
-ZT="FFmpeg convert"						#zenity_title
-SF_IN=${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS%$'\n'}		#ffmpeg_input
-SF_OUT=""							#ffmpeg_output
-SF=$(basename "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS")		#selected_file
-DR=$(dirname "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS")		#directory_name
-SF_EX=${SF##*.};if [[ "$SF_EX" == "$SF" ]];then SF_EX="";fi	#selected_file_extension
-SF_NX=""							#selected_file_extension_new
+ZT="FFmpeg convert"												#zenity_title
+SF_IN=${NAUTILUS_SCRIPT_SELECTED_FILE_PATHS%$'\n'}				#ffmpeg_input
+SF_OUT=""														#ffmpeg_output
+SF_LC="$(echo "$SF_IN"|wc -l)"									#SF_IN_line_count
+SF=$(basename "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS")			#selected_file
+DR=$(dirname "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS")			#directory_name
+SF_EX=${SF##*.};if [[ "$SF_EX" == "$SF" ]];then SF_EX="";fi		#selected_file_extension
+SF_NX=""														#selected_file_extension_new
+SF_FT="$(ffprobe "$SF_IN")"
 
 #functions
 
@@ -18,6 +20,8 @@ entry(){ zenity --entry --title="$ZT" --text="\
 Selected file: $SF \
 \n\n\
 File extension is $SF_EX \
+\n\n\
+File format is $SF_FT \
 \n\n\
 Enter extension to convert (A-Z, a-z, 0-9, without dot):";}
 
@@ -31,6 +35,7 @@ convert(){ if ffmpeg -i "$SF_IN" "$SF_OUT";then close "Success";else close "FFmp
 
 #script_body
 
+check_sf
 if SF_NX=$(entry);then replace
 	if check;then
 		if confirm;then convert
