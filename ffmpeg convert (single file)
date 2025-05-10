@@ -10,7 +10,6 @@ SF=$(basename "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS")			#selected_file
 DR=$(dirname "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS")			#directory_name
 SF_EX=${SF##*.};if [[ "$SF_EX" == "$SF" ]];then SF_EX="";fi		#selected_file_extension
 SF_NX=""														#selected_file_extension_new
-SF_FT="$(ffprobe "$SF_IN")"
 
 #functions
 
@@ -20,8 +19,6 @@ entry(){ zenity --entry --title="$ZT" --text="\
 Selected file: $SF \
 \n\n\
 File extension is $SF_EX \
-\n\n\
-File format is $SF_FT \
 \n\n\
 Enter extension to convert (A-Z, a-z, 0-9, without dot):";}
 
